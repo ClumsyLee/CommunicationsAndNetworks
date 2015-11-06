@@ -4,6 +4,10 @@ function signals = qam_send(symbols, f_carrier, oversample_rate)
     len = length(symbols);
     sample_rate = 8 * f_carrier * oversample_rate;
 
+    figure
+    stem(symbols);
+    title 'Input'
+
     left = mod(len, 4);
     if left
         if symbols(1) == 0
@@ -19,7 +23,7 @@ function signals = qam_send(symbols, f_carrier, oversample_rate)
     % 2 -> L
     signals = qam_2l_convert(symbols);
     figure
-    plot(signals);
+    stem(signals);
     title 'After 2->L'
 
     lpf = rcosdesign(0.5, 6, sample_rate);
@@ -27,7 +31,7 @@ function signals = qam_send(symbols, f_carrier, oversample_rate)
     signal_len = size(signals, 1);
     figure
     plot(signals);
-    title 'After LPF'
+    title 'After LPF of sender'
 
     % Get on carrier.
     carrier = [cos(pi / oversample_rate * (1:signal_len))
