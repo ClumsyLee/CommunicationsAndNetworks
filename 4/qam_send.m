@@ -15,7 +15,7 @@ function signals = qam_send(symbols, f_carrier, oversample_rate)
     symbols = reshape(symbols, 2, len / 2)';
 
     % 2 -> L
-    signals = qam_2l_convert(symbols, 2 * f_carrier * oversample_rate);
+    signals = qam_2l_convert(symbols, 4 * f_carrier * oversample_rate);
     signal_len = size(signals, 1);
 
     % Get on carrier.
