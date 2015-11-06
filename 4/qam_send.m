@@ -17,6 +17,10 @@ function signals = qam_send(symbols, f_carrier, oversample_rate)
     % 2 -> L
     signals = qam_2l_convert(symbols, 4 * f_carrier * oversample_rate);
     signal_len = size(signals, 1);
+    % figure
+    % plot(signals);
+
+    signals = filter(ones(1, 2 * oversample_rate), 1, signals);  % Low pass.
 
     % Get on carrier.
     carrier = [cos(pi / oversample_rate * (1:signal_len))
