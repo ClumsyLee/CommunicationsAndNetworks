@@ -1,4 +1,4 @@
-function signals = qam_2l_convert(symbols)
+function signals = qam_2l_convert(symbols, sample_rate)
     [len, cols] = size(symbols);
     if mod(len, 2)
         error 'qam_2l_convert: mod(size(symbols, 1), 2) ~= 0'
@@ -17,6 +17,8 @@ function signals = qam_2l_convert(symbols)
     signals(signals == 3) = 1;
     signals(signals == 2) = 3;
 
-    % Make sure averge power = 1 in QAM.
-    signals = sqrt(10) / 40 * reshape(signals, len / 2, cols);
+    signals = sqrt(10) / 40 * signals;  % Make sure averge power = 1 in QAM.
+    signals = repmat(signals', [sample_rate, 1]);  % Repeat sample_rate times.
+
+    signals = reshape(signals, len / 2 * sample_rate, cols);
 end
