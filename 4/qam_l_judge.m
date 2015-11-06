@@ -1,10 +1,9 @@
 function symbols = qam_l_judge(signals)
     signals = sqrt(10) * signals;
-    signals(        signals < -2)   = 0;
-    signals(-2   <= signals < -0.5) = 1;
-    signals(-0.5 <= signals < 0.5)  = -1;
-    signals(0.5  <= signals < 2)    = 3;
-    signals(2    <= signals)        = 2;
+    signals(signals >= 2) = 2;
+    signals(signals >= 0 & signals < 2) = 3;
+    signals(signals >= -2 & signals < 0) = 1;
+    signals(signals < -2) = 0;
 
     [signal_len, cols] = size(signals);
     signals = signals(:);
