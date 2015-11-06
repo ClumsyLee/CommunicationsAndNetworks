@@ -24,5 +24,5 @@ function signals = qam_send(symbols, f_carrier, oversample_rate)
     signals = signals .* carrier;
 
     % Merge.
-    signals = signals(:, 1) .* signals(:, 2);
+    signals = signals(:, 1) + signals(:, 2);
 end
