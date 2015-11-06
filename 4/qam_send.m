@@ -1,6 +1,6 @@
 % 16QAM.
 % Average power = 1.
-function signals = qam_send(symbols, f_carrier, oversample_rate)
+function signals = qam_send(symbols, f_carrier, oversample_rate, method)
     len = length(symbols);
     sample_rate = 8 * f_carrier * oversample_rate;
 
@@ -34,11 +34,17 @@ function signals = qam_send(symbols, f_carrier, oversample_rate)
     title 'After LPF of sender'
 
     % Get on carrier.
-    carrier = [cos(pi / oversample_rate * (1:signal_len))
-               cos(pi / oversample_rate * (1:signal_len) + pi / 2)]';
+    switch method
+    case 'real'
+        carrier = [cos(pi / oversample_rate * (1:signal_len))
+                   cos(pi / oversample_rate * (1:signal_len) + pi / 2)]';
+    case 'complex'
+        carrier = [exp(j * pi / oversample_rate * (1:signal_len))
+                   exp(j * (pi / oversample_rate * (1:signal_len) + pi / 2))]';
+    end
     signals = signals .* carrier;
     figure
-    plot(signals);
+    plot(real(signals));
     title 'Got on carrier'
 
     % Merge.

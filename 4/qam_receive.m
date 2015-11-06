@@ -1,12 +1,18 @@
 % 16QAM.
-function symbols = qam_receive(signals, f_carrier, oversample_rate)
+function symbols = qam_receive(signals, f_carrier, oversample_rate, method)
     signal_len = length(signals);
     sample_rate = 8 * f_carrier * oversample_rate;
 
     % Recover.
-    carrier = [cos(pi / oversample_rate * (1:signal_len))
-               cos(pi / oversample_rate * (1:signal_len) + pi / 2)]';
-    signals = [signals signals] .* carrier;
+    switch method
+    case 'real'
+        carrier = [cos(pi / oversample_rate * (1:signal_len))
+                   cos(pi / oversample_rate * (1:signal_len) + pi / 2)]';
+    case 'complex'
+        carrier = [exp(-j * pi / oversample_rate * (1:signal_len))
+                   exp(-j * (pi / oversample_rate * (1:signal_len) + pi / 2))]';
+    end
+    signals = real([signals signals] .* carrier);
     figure
     plot(signals);
     title 'Got off carrier'
