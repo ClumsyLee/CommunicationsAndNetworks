@@ -4,10 +4,6 @@ function signals = qam_send(symbols, f_carrier, oversample_rate, method)
     len = length(symbols);
     sample_rate = 8 * f_carrier * oversample_rate;
 
-    figure
-    stem(symbols);
-    title 'Input'
-
     left = mod(len, 4);
     if left
         if symbols(1) == 0
@@ -22,16 +18,10 @@ function signals = qam_send(symbols, f_carrier, oversample_rate, method)
 
     % 2 -> L
     signals = qam_2l_convert(symbols);
-    figure
-    stem(signals);
-    title 'After 2->L'
 
     lpf = rcosdesign(0.5, 6, sample_rate);
     signals = upfirdn(signals, lpf, sample_rate);
     signal_len = size(signals, 1);
-    figure
-    plot(signals);
-    title 'After LPF of sender'
 
     % Get on carrier.
     switch method
@@ -43,9 +33,6 @@ function signals = qam_send(symbols, f_carrier, oversample_rate, method)
                    exp(j * (pi / oversample_rate * (1:signal_len) + pi / 2))]';
     end
     signals = signals .* carrier;
-    figure
-    plot(real(signals));
-    title 'Got on carrier'
 
     % Merge.
     signals = signals(:, 1) + signals(:, 2);
