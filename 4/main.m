@@ -1,15 +1,15 @@
 close all
 
-LEN = 1000;
-ITERS = 100;
-ebn0 = -10:1:10;
+LEN = 10000;
+ITERS = 10;
+ebn0 = -10:0.5:10;
 
 error_bit_rate_real = zeros(length(ebn0), 1);
 error_bit_rate_complex = zeros(length(ebn0), 1);
 error_sym_rate_real = zeros(length(ebn0), 1);
 error_sym_rate_complex = zeros(length(ebn0), 1);
 
-for k = 1:length(ebn0)
+parfor k = 1:length(ebn0)
     disp(['Eb/N0 = ' num2str(ebn0(k))]);
     snr_real = 10 * log10(8) + ebn0(k);
     snr_complex = 10 * log10(4) + ebn0(k);
