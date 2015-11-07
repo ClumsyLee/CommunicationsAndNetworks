@@ -1,15 +1,11 @@
-% 第四次编程作业
+% 第四次编程作业 匹配滤波与最佳接收
 % 无36
   李思涵
   2013011187
   <lisihan969@gmail.com>
 % \today
 
-# 编程题 1
-
-## 题目
-
-**匹配滤波与最佳接收**
+# 题目
 
 1. 编写一个含 QAM 传输的发送和接收模块
 2. 分别采用复基带仿真和实带通仿真两种形式
@@ -20,11 +16,9 @@
 6. 画出发端输出的眼图和收端过匹配滤波后的眼图（画眼图时不加噪声）
 7. 统计误符号率和误比特率与 Eb/N0 的关系，画出曲线，与理论计算的曲线相对比
 
-## 解答
+# 理论分析
 
-### 理论分析
-
-#### 误符号率/误符号率
+## 误符号率/误符号率
 
 对于 MQAM 信号，其误符号率公式为
 
@@ -50,7 +44,7 @@
   P_{b,16QAM} \approx \frac{P_{s,16QAM}}{\log_2{L}} = \frac{P_{s,16QAM}}{2}
 \]
 
-#### 信噪比
+## 信噪比
 
 注意到，上式中对噪声使用的度量都是 $\frac{E_b}{N_0}$。为了仿真的方便，我们还需要
 $\frac{E_b}{N_0}$ 与 $SNR$ 的关系。对于实信道：
@@ -65,7 +59,7 @@ $\frac{E_b}{N_0}$ 与 $SNR$ 的关系。对于实信道：
   SNR = \frac{E_s}{N_0} = \frac{4E_b}{N_0}
 \]
 
-#### 符号 - 电平映射
+## 符号 - 电平映射
 
 我们使用采用格雷码的 16 QAM，星座图如图所示。
 
@@ -77,9 +71,11 @@ $\frac{E_b}{N_0}$ 与 $SNR$ 的关系。对于实信道：
 计算可知，复信道中星座图中一格应为 $\frac{1}{\sqrt{10}}$，实信道中应为
 $\frac{2}{\sqrt{10}}$。
 
-### 模块实现
+# 模块实现
 
-#### `qam_2l_convert.m`
+## `qam_2l_convert.m`
+
+实现符号到电平的映射。
 
 ```matlab
 function signals = qam_2l_convert(symbols, method)
@@ -110,7 +106,9 @@ function signals = qam_2l_convert(symbols, method)
 end
 ```
 
-#### `qam_l_judge.m`
+## `qam_l_judge.m`
+
+实现电平到比特流的判决。
 
 ```matlab
 function symbols = qam_l_judge(signals)
@@ -133,7 +131,15 @@ function symbols = qam_l_judge(signals)
 end
 ```
 
-#### `qam_send.m`
+## `qam_send.m`
+
+16QAM 发端函数，依次进行如下操作：
+
+1. 串-并变换
+2. 2-L 电平转换
+3. 根升余弦滤波器。这里我们使用了 `rcosdesign` 函数和 `upfirdn` 函数。
+4. 分别与 0° 和 90° 的载波相乘
+5. 将两路信号相加。
 
 ```matlab
 % 16QAM.
@@ -177,7 +183,14 @@ function signals = qam_send(symbols, f_carrier, oversample_rate, method)
 end
 ```
 
-#### `qam_receive.m`
+## `qam_receive.m`
+
+16QAM 收端函数，依次进行如下操作：
+
+1. 载波恢复
+2. 根升余弦滤波器。同样地，这里我们使用了 `rcosdesign` 函数和 `upfirdn` 函数。
+3. 判决 (L - 1) 门限
+4. 并-串变换
 
 ```matlab
 % 16QAM.
@@ -208,7 +221,9 @@ function symbols = qam_receive(signals, f_carrier, oversample_rate, method)
 end
 ```
 
-#### `main.m`
+## `main.m`
+
+由于生成的随机序列具有随机性，我们对每个 $\frac{E_s}{N_0}$ 都进行了多次循环，并取平均值。
 
 ```matlab
 close all
@@ -295,9 +310,9 @@ legend Theoretical Actural
 title Complex
 ```
 
-### 仿真结果
+# 仿真结果
 
-#### 误比特率/误符号率
+## 误比特率/误符号率
 
 ![误符号率](ps.png)
 
@@ -320,4 +335,16 @@ title Complex
     这是由于我们的仿真次数有限。当信噪比很小的时候，多次仿真得到的误符号个数还是很少，故随机性
     比较大，更容易受输入信号的影响。
 
-#### 眼图
+## 眼图
+
+![发端眼图](eye_sender.png)
+
+![收端眼图](eye_receiver.png)
+
+发端眼图和收端眼图如图所示。
+
+从图中可以看出，在经过了一个根升余弦滤波器之后，信号在采样点受到了串扰的影响。而在经过了第二个
+根升余弦滤波器后，信号相当于经过了一个升余弦滤波器，故在采样点无失真。
+
+至于使用两个根余弦滤波器的原因，则是为了最大化采样点的信噪比。同时，第二个根余弦滤波器也起到了
+低通滤波器的作用，将信号从载波上卸下来。
