@@ -80,3 +80,17 @@ semilogy(ebn0, 3/2*(1 - normcdf(sqrt(4/5*10.^(ebn0 / 10)))), ...
  ylabel P_s
 legend Theoretical Actural
 title Complex
+
+%
+% % Eb/N0 = 15dB
+% symbols = logical([1; randi([0 1], LEN - 1, 1)]);
+%
+% % Real.
+% signals = qam_send(symbols, 4, 20, 'real');
+% signals = awgn(signals, 10 * log10(8) + 15);
+% received = qam_receive(signals, 4, 20, 'real');
+%
+% % Complex.
+% signals = qam_send(symbols, 4, 4, 'complex');
+% signals = awgn(signals, 10 * log10(4) + 15);
+% received = qam_receive(signals, 4, 4, 'complex');

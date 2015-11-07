@@ -211,6 +211,8 @@ function symbols = qam_receive(signals, f_carrier, oversample_rate, method)
                    exp(-j * (pi / oversample_rate * (1:signal_len) + pi / 2))]';
     end
     signals = real([signals signals] .* carrier);
+    % figure
+    % plot(signals(1:sample_rate*100, :));
 
     % LPF
     lpf = rcosdesign(0.5, 6, sample_rate);
@@ -311,9 +313,35 @@ semilogy(ebn0, 3/2*(1 - normcdf(sqrt(4/5*10.^(ebn0 / 10)))), ...
  ylabel P_s
 legend Theoretical Actural
 title Complex
+
+%
+% % Eb/N0 = 15dB
+% symbols = logical([1; randi([0 1], LEN - 1, 1)]);
+%
+% % Real.
+% signals = qam_send(symbols, 4, 20, 'real');
+% signals = awgn(signals, 10 * log10(8) + 15);
+% received = qam_receive(signals, 4, 20, 'real');
+%
+% % Complex.
+% signals = qam_send(symbols, 4, 4, 'complex');
+% signals = awgn(signals, 10 * log10(4) + 15);
+% received = qam_receive(signals, 4, 4, 'complex');
 ```
 
 # 仿真结果
+
+## 15dB 时前 100 个采样
+
+注意：这里理解的前 100 个采样指 100 个符号周期，因为由于滤波器的延时，前 100 个采样点啥都
+没有呢还 `= =`。
+
+![15dB 时前 100 个采样（实信道）](wave_real.png)
+
+![15dB 时前 100 个采样（复信道）](wave_complex.png)
+
+从图中可以看到，由于在这里已经经过了载波恢复这一步，我们已经能隐约看出载波中承载的信息。同时，
+可以发现复信号的波形更为显露。这是因为实信道仿真时过采样率更高。
 
 ## 误比特率/误符号率
 

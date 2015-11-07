@@ -13,6 +13,8 @@ function symbols = qam_receive(signals, f_carrier, oversample_rate, method)
                    exp(-j * (pi / oversample_rate * (1:signal_len) + pi / 2))]';
     end
     signals = real([signals signals] .* carrier);
+    % figure
+    % plot(signals(1:sample_rate*100, :));
 
     % LPF
     lpf = rcosdesign(0.5, 6, sample_rate);
