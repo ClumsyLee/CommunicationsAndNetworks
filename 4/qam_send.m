@@ -16,11 +16,13 @@ function signals = qam_send(symbols, f_carrier, oversample_rate, method)
     % Serial => parallel.
     symbols = reshape(symbols, 2, len / 2)';
 
-    % 2 -> L
+    % 2 -> L.
     signals = qam_2l_convert(symbols);
 
+    % LPF,
     lpf = rcosdesign(0.5, 6, sample_rate);
     signals = upfirdn(signals, lpf, sample_rate);
+    eyediagram(signals, sample_rate, 1, 3);
     signal_len = size(signals, 1);
 
     % Get on carrier.
