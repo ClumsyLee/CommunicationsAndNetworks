@@ -18,9 +18,9 @@ function signals = qam_send(symbols, f_carrier, oversample_rate, method)
     signals = qam_2l_convert(symbols, method);
 
     % LPF,
-    lpf = rcosdesign(0.5, 6, sample_rate);
+    lpf = rcosdesign(0.5, 40, sample_rate);
     signals = upfirdn(signals, lpf, sample_rate);
-    % eyediagram(signals, sample_rate, 1, 3);
+    % eyediagram(signals, sample_rate, 1);
     signal_len = size(signals, 1);
 
     % Get on carrier.

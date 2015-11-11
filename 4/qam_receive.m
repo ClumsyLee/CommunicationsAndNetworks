@@ -17,10 +17,10 @@ function symbols = qam_receive(signals, f_carrier, oversample_rate, method)
     % plot(signals(1:sample_rate*100, :));
 
     % LPF
-    lpf = rcosdesign(0.5, 6, sample_rate);
-    % eyediagram(filter(lpf, 1, signals), sample_rate, 1, 3);
+    lpf = rcosdesign(0.5, 40, sample_rate);
+    % eyediagram(filter(lpf, 1, signals), sample_rate, 1);
     signals = upfirdn(signals, lpf, 1, sample_rate);
-    signals = signals(7:end-6, :);  % Caused by filter delay.
+    signals = signals(41:end-40, :);  % Caused by filter delay.
 
     % Judge & merge.
     symbols = qam_l_judge(signals)';
