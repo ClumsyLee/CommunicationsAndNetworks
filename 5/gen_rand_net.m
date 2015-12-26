@@ -1,5 +1,5 @@
 function adj_mat = gen_rand_net(nodes, edges)
-    % Dicide which edges to take.
+    % Decide which edges to take.
     max_edges = (nodes - 1) * nodes / 2;
     edges = min(edges, max_edges);
     pick = zeros(max_edges, 1);

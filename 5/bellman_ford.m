@@ -20,7 +20,7 @@ function [dist, next] = bellman_ford(adj_mat, src)
         dist = new_dist;
     end
 
-    % Remove unaccessable entries in next.
+    % Remove inaccessible entries in next.
     next(isinf(dist)) = 0;
 
     % Return only the data for src.
